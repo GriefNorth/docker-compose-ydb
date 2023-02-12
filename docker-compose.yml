@@ -1,0 +1,30 @@
+version: '3'
+services:
+  ydb-local:
+    image: cr.yandex/yc/yandex-docker-local-ydb:latest
+    hostname: ydb-local
+    volumes:
+      - ./ydb_certs:/ydb_certs
+      - ./ydb_data:/ydb_data
+    ports:
+      - 2135:2135
+      - 8765:8765
+      - 2136:2136
+    environment:
+      YDB_DEFAULT_LOG_LEVEL: NOTICE
+      GRPC_TLS_PORT: 2135
+      GRPC_PORT: 2136
+      MON_PORT: 8765
+    networks:
+      ydbnet:
+        ipv4_address: 172.10.124.110
+
+
+networks:
+  ydbnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.10.124.0/24
+          gateway: 172.10.124.1
